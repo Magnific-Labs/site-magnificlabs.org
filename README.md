@@ -1,0 +1,146 @@
+# Magnific Labs — studio site
+
+Server-rendered JSX built with [Fastify](https://fastify.dev) and
+[KitaJS](https://html.kitajs.org), prerendered to static HTML and deployed to
+Firebase Hosting. [htmx](https://htmx.org) handles the interactive parts.
+
+No client-side framework ships to the browser.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Fastify dev server on <http://localhost:3000>, renders every request fresh |
+| `npm run build` | Prerenders every route to `dist/` |
+| `npm run serve` | Builds, then serves `dist/` through the Firebase emulator |
+| `npm run deploy` | Builds, then deploys to Firebase Hosting |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npx xss-scan` | Checks every JSX expression is escaped or explicitly marked safe |
+
+## Layout
+
+```
+src/
+  components/     Server-rendered JSX. ds/ holds the design-system primitives.
+  pages/          One module per page, each returning a full <Document>.
+  content/
+    posts/        Blog posts: markdown + frontmatter. Add a file, it appears.
+    legal/        Privacy policy and terms.
+  lib/            Config, markdown, content loading, asset pipeline.
+  styles/         site.css and the ported design-system component CSS.
+  scripts/
+    site.js       Progressive enhancement (reveal-on-scroll, table of contents).
+    analytics.js  Consent gate, and GA4 once consent is given.
+  routes.ts       Every published URL, in one list.
+  server.ts       Dev server.
+  prerender.ts    Build: walks routes.ts, writes dist/.
+public/           Copied to dist/ untouched (images, favicon).
+_ds/              Vendored design system. Source of the CSS tokens.
+dist/             Build output. Not committed.
+legacy/           The pre-refactor client-rendered site, kept for reference.
+```
+
+`routes.ts` is the single source of truth: the dev server registers those paths
+as handlers and the prerenderer walks the same list writing files, so the two
+cannot drift.
+
+## Adding a blog post
+
+Create `src/content/posts/my-post.md`:
+
+```markdown
+---
+title: "My post"
+date: "2026-08-19"
+tag: "Craft"
+tone: "sage"
+summary: "One or two sentences for the card and the meta description."
+---
+
+Body text. `##` headings become the table of contents.
+```
+
+It is picked up automatically — published at `/blog/my-post/`, listed on the
+blog index and the home page, and added to `sitemap.xml`. `tone` is one of
+`sage`, `sky`, `lavender`, `butter`, `clay`. A new post adds a route, so
+restart `npm run dev`; editing an existing one only needs a reload.
+
+## How the pieces fit
+
+**Rendering.** KitaJS compiles JSX to string concatenation — there is no
+virtual DOM and no React. `Document` in `components/layout.tsx` renders the
+whole page including `<head>`.
+
+**Escaping.** KitaJS does *not* escape children by default, which is what lets
+rendered markdown through intact. Every other interpolation carries a `safe`
+attribute or goes through `Html.escapeHtml()`, and `npx xss-scan` fails the
+build if one is missed. Values named `safe*` are treated as vetted — used only
+where a value provably cannot contain markup.
+
+**htmx.** `hx-boost` on `<body>` turns navigation into fragment swaps. The blog
+tag filter is the one real interaction: the pills are ordinary links to
+prerendered `/blog/tag/<tag>/` pages, upgraded with `hx-get` to swap just the
+list. So filtering works with JavaScript off, and every filter has a real
+shareable URL. Links that leave the site (`mailto:`, GitHub) must not be
+boosted — the `Link` component sets `hx-boost="false"` on them automatically,
+so no individual link has to remember.
+
+**Analytics.** Google Analytics 4, via the measurement id of the Firebase web
+app in `site-magnificlabs-org`; events appear in the Analytics section of the
+Firebase console. The measurement id in `lib/analytics.ts` is not a secret — it
+names the destination property and is designed to ship in client code.
+
+It is **consent-gated**: until a visitor presses Accept, no script is fetched,
+no request reaches Google and no cookie is set. Two consequences to preserve if
+you touch this code:
+
+- Do not add a `preconnect` or `dns-prefetch` for `googletagmanager.com`. It
+  would open a connection to Google before consent and leak the visitor's IP,
+  defeating the gate.
+- `components/consent.tsx` renders hidden and is revealed by script. With
+  JavaScript off, the banner never shows and analytics never loads, which is the
+  correct outcome. Do not invert this to render visible-by-default.
+
+Decline sits beside Accept because consent that cannot be refused is not
+consent, the choice lives in `localStorage` rather than a cookie, Global Privacy
+Control and Do Not Track are honoured as a decline without asking, and
+"Analytics settings" in the footer reopens the notice so consent can be
+withdrawn as easily as it was given.
+
+Because `hx-boost` swaps the body instead of loading a document, GA4's automatic
+`page_view` fires only on the first load of a visit. `scripts/analytics.js`
+sends the rest itself, keyed on the URL changing, which also covers the blog tag
+filter (each filter is a real page with its own URL). Remove that listener and
+analytics silently under-reports every page after the first.
+
+`content/legal/privacy.md` describes what this collects. If you change what is
+measured, change that file in the same commit — it is a published legal page.
+
+**Assets.** The design system ships `styles.css` importing four token files,
+one of which imports Google Fonts — three round trips before a glyph loads.
+`lib/styles.ts` flattens all of it into one stylesheet and lifts the font URL
+into `<head>`. CSS, JS and htmx are content-hashed, which is what makes the
+`immutable` cache headers in `firebase.json` safe.
+
+## Responsive layout
+
+Verified with zero horizontal overflow across 11 pages x 9 viewport widths
+(320-1280px). Two traps worth knowing about, both fixed here:
+
+- The single-column `.split` uses `minmax(0,1fr)`. A bare `1fr` means
+  `minmax(auto,1fr)`, so a wide child — a code block in a post — sets the
+  track's minimum and pushes the whole page sideways. This cost 291px of
+  overflow on article pages.
+- Below 560px the wordmark is hidden. The logo, the wordmark and four nav links
+  cannot share one row on a phone; the logo mark carries the brand, so the
+  repeated text is what gives way.
+
+## Deploying
+
+```sh
+npm run deploy
+```
+
+Prerenders and deploys to the `site-magnificlabs-org` Firebase project. Old
+`.html` URLs from the previous version 301-redirect to their new paths, which
+`firebase.json` handles.

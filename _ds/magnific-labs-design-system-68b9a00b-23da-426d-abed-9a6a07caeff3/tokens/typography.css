@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Figtree:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+:root{
+/* Figtree — display/headings. Atkinson Hyperlegible — body/UI, designed for low-vision legibility. JetBrains Mono — code. */
+--font-display:'Figtree',ui-sans-serif,system-ui,sans-serif;
+--font-body:'Atkinson Hyperlegible','Figtree',ui-sans-serif,system-ui,sans-serif;
+--font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+/* accessible scale: body never below 16px, captions never below 14px */
+--text-xs:14px;--text-sm:15px;--text-base:16px;--text-md:18px;--text-lg:22px;--text-xl:26px;--text-2xl:32px;--text-3xl:40px;--text-4xl:52px;
+--leading-tight:1.2;--leading-snug:1.4;--leading-normal:1.6;--leading-relaxed:1.75;
+--tracking-tight:-0.015em;--tracking-normal:0;--tracking-wide:0.06em;
+--weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;--weight-extrabold:800;
+--measure-prose:68ch;
+}

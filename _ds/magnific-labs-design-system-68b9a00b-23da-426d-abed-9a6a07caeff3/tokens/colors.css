@@ -1,0 +1,31 @@
+:root{
+/* brand — from logo mark gradient. 700 and darker pass 4.5:1 on paper surfaces. */
+--brand-900:#2a1d18;--brand-700:#42302a;--brand-600:#523c33;--brand-500:#6b4f43;--brand-400:#8c6a57;--brand-300:#b0917f;--brand-200:#d4bfb2;--brand-100:#ede2da;--brand-50:#f8f2ed;
+
+/* pastel accents — tonal ramps; 700 steps are darkened to clear 4.5:1 on their own 100 tint */
+--sage-100:#e4efe6;--sage-300:#b7d2ba;--sage-500:#5f8c68;--sage-700:#2f5a3c;
+--sky-100:#e3edf4;--sky-300:#b3cee0;--sky-500:#4f86ad;--sky-700:#28536f;
+--lavender-100:#ece6f4;--lavender-300:#cbb9de;--lavender-500:#7f66a5;--lavender-700:#4f3a75;
+--butter-100:#f9f0da;--butter-300:#eed89f;--butter-500:#b08f2c;--butter-700:#6d5410;
+--clay-100:#f6e7e1;--clay-300:#e6bcab;--clay-500:#b56347;--clay-700:#7f3f2b;
+
+/* neutrals — warm paper, bear-notes inspired */
+--paper-0:#fffdfb;--paper-50:#faf6f1;--paper-100:#f3ece4;--paper-200:#e7ddd2;--paper-300:#d6c9bb;
+--ink-900:#241d1a;--ink-700:#3f342e;--ink-500:#5e5049;--ink-300:#7d6e65;--ink-100:#d8cfc5;
+
+/* dark surface set */
+--dark-900:#191412;--dark-800:#221b18;--dark-700:#2d2521;--dark-600:#3b312b;--dark-500:#4d413a;
+
+/* semantic — light */
+--surface-app:var(--paper-50);--surface-card:var(--paper-0);--surface-sunken:var(--paper-100);--surface-border:var(--paper-300);
+--text-primary:var(--ink-900);--text-secondary:var(--ink-500);--text-tertiary:var(--ink-300);--text-inverse:var(--paper-0);
+--accent:var(--brand-600);--accent-hover:var(--brand-700);--accent-soft:var(--brand-100);
+--success:var(--sage-700);--success-soft:var(--sage-100);
+--info:var(--sky-700);--info-soft:var(--sky-100);
+--warning:var(--butter-700);--warning-soft:var(--butter-100);
+--danger:var(--clay-700);--danger-soft:var(--clay-100);
+--focus-ring:var(--lavender-700);
+/* semantic — dark surfaces (text tokens meet 4.5:1 on --dark-800/900) */
+--surface-app-dark:var(--dark-900);--surface-card-dark:var(--dark-800);--surface-border-dark:var(--dark-600);
+--text-primary-dark:var(--paper-50);--text-secondary-dark:var(--paper-300);
+}

@@ -1,0 +1,34 @@
+{
+  "name": "magnificlabs-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Magnific Labs — studio site. Fastify + KitaJS server JSX, prerendered to static HTML.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsx src/prerender.ts",
+    "serve": "npm run build && firebase emulators:start --only hosting",
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fastify/static": "^8.3.0",
+    "@kitajs/fastify-html-plugin": "^4.2.1",
+    "@kitajs/html": "^4.2.13",
+    "fastify": "^5.12.1",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.3.0",
+    "markdown-it-anchor": "^9.2.1"
+  },
+  "devDependencies": {
+    "@kitajs/ts-html-plugin": "^4.1.4",
+    "@types/markdown-it": "^14.2.0",
+    "@types/node": "^22.20.1",
+    "htmx.org": "^2.0.10",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}

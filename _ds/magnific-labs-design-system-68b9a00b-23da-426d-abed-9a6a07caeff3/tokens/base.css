@@ -1,0 +1,11 @@
+/* Base element defaults so every consuming page inherits accessible type, links and focus rings. */
+body{font-family:var(--font-body);font-size:var(--text-base);line-height:var(--leading-normal);color:var(--text-primary);background:var(--surface-app);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--text-primary);line-height:var(--leading-tight);letter-spacing:var(--tracking-tight);margin:0}
+p{max-width:var(--measure-prose);text-wrap:pretty}
+a{color:var(--brand-700);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+a:hover{color:var(--brand-900);text-decoration-thickness:2px}
+:focus-visible{outline:var(--focus-outline-width) solid var(--focus-ring);outline-offset:var(--focus-outline-offset)}
+button,input,select,textarea{font-family:inherit;font-size:var(--text-base)}
+button,a[role="button"]{min-height:var(--target-min)}
+code,pre{font-family:var(--font-mono)}
+::selection{background:var(--brand-200)}
