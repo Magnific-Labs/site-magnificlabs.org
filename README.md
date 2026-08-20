@@ -35,7 +35,9 @@ src/
   routes.ts       Every published URL, in one list.
   server.ts       Dev server.
   prerender.ts    Build: walks routes.ts, writes dist/.
-public/           Copied to dist/ untouched (images, favicon).
+public/           Copied to dist/ untouched (derived images, favicon, og.png).
+brand/            1024px logo masters. NOT deployed — see brand/README.md for
+                  how the files in public/assets/ are derived from them.
 _ds/              Vendored design system. Source of the CSS tokens.
 dist/             Build output. Not committed.
 legacy/           The pre-refactor client-rendered site, kept for reference.
@@ -150,6 +152,31 @@ clear of the sticky header with no offset.
 This is a deliberate exception to the motion budget published in
 `content/posts/a-motion-budget.md`, and that post says so. If you change what
 scrolling does, change that post in the same commit.
+
+## Icons and social preview
+
+`public/assets/` holds only right-sized derivatives. The masters live in
+`brand/`, outside the deploy path — they were previously in `public/`, which
+shipped 83KB no page requested. `brand/README.md` has the regeneration commands.
+
+Two couplings to keep in mind:
+
+- `<meta name="theme-color">` duplicates `--paper-50`. A meta tag cannot read a
+  CSS variable, so it is the one hardcoded colour in the layout; update both.
+- `og.png` bakes in the wordmark and tagline. Regenerate it when either changes.
+
+## Heading order
+
+Two places compute a heading level rather than hardcoding one, because getting
+it wrong silently breaks the document outline for screen readers:
+
+- Footer column headings are `h2`. They were `h4`, which skipped a level on
+  every page.
+- `PostCard` takes a `level`: `h2` on the blog index, where cards sit directly
+  under the page `h1`, and `h3` on the home page, where they nest under a
+  "From the blog" `h2`.
+
+`npx lighthouse` or the Lighthouse panel should stay at 100 for accessibility.
 
 ## Responsive layout
 

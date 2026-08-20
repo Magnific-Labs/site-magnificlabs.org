@@ -109,7 +109,7 @@ ul{margin:0}
 .ftr .mark span{color:var(--brand-300)}
 .ftr-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:clamp(28px,4vw,64px)}
 @media(max-width:860px){.ftr-grid{grid-template-columns:1fr 1fr}}
-.ftr h4{font-size:var(--text-sm);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--brand-300)}
+.ftr h2{font-size:var(--text-sm);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--brand-300)}
 .ftr a{color:var(--paper-100);font-size:var(--text-sm);display:inline-block;padding:5px 0;transition:color var(--duration-fast)}
 .ftr a:hover{color:var(--paper-0)}
 .ftr .rule{margin-top:clamp(32px,4vw,56px);padding-top:20px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;color:var(--paper-300);font-size:var(--text-sm)}

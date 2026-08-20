@@ -56,7 +56,7 @@ export function BlogFilter({ posts, activeTag }: FilterProps): JSX.Element {
       </div>
       <div class="postlist">
         {shown.map((post) => (
-          <PostCard post={post} />
+          <PostCard post={post} level={2} />
         ))}
       </div>
     </>

@@ -18,7 +18,7 @@ function SiteHeader({ active }: { active?: string }): JSX.Element {
     <header class="hdr">
       <div class="wrap hdr-in">
         <Link class="bookmark" href="/" aria-label="Magnific Labs — home">
-          <img src="/assets/logo-mark-alpha.png" alt="" width="130" height="130" />
+          <img src="/assets/logo-mark-260.png" alt="" width="130" height="130" />
         </Link>
         <Wordmark />
         <nav class="nav" id="site-nav" aria-label="Main">
@@ -101,7 +101,7 @@ function SiteFooter(): JSX.Element {
           </div>
           {footerColumns.map((column) => (
             <div class="col" style={{ gap: '2px' }}>
-              <h4 safe>{column.heading}</h4>
+              <h2 safe>{column.heading}</h2>
               {column.links.map((link) => (
                 <Link href={link.href}>{Html.escapeHtml(link.label)}</Link>
               ))}
@@ -147,7 +147,11 @@ export function Document({ title, description, active, path, children }: Documen
           <title safe>{title}</title>
           <meta name="description" content={description} />
           <link rel="canonical" href={canonical} />
-          <link rel="icon" href="/assets/logo-mark-alpha.png" />
+          <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" />
+          <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+          {/* Must track --paper-50 in the design system; a meta tag cannot read a
+              CSS variable, so this is the one place the value is duplicated. */}
+          <meta name="theme-color" content="#faf6f1" />
 
           {/* Fonts are hoisted out of the design-system CSS so they load in
               parallel with it rather than after it. */}
@@ -162,7 +166,11 @@ export function Document({ title, description, active, path, children }: Documen
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
           <meta property="og:url" content={canonical} />
-          <meta name="twitter:card" content="summary" />
+          <meta property="og:image" content={new URL('/assets/og.png', site.url).href} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Magnific Labs — made to be lived with." />
+          <meta name="twitter:card" content="summary_large_image" />
 
           <script src={htmxHref} defer />
           <script src={lenisHref} defer />
