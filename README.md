@@ -178,6 +178,34 @@ it wrong silently breaks the document outline for screen readers:
 
 `npx lighthouse` or the Lighthouse panel should stay at 100 for accessibility.
 
+## Sticky geometry
+
+Everything that pins offsets from two variables at the top of `site.css`:
+
+```css
+:root{--header-h:92px;--sticky-gap:28px}
+@media(max-width:860px){:root{--header-h:76px;--sticky-gap:16px}}
+```
+
+`--header-h` also drives the header's own `min-height`, and `--sticky-gap` is
+the breathing room between the header and whatever pins under it. The pinned
+cards, the pinned columns and `scroll-padding-top` all derive from them, so
+changing the header height cannot leave something tucked behind it.
+
+That is not hypothetical: the offsets used to be literals (`112px`, `120px`,
+`84px`), and because the mobile overrides sat in a `max-width:900px` block while
+the header only shrinks at `max-width:860px`, the pin stuck at 76px under a 92px
+header for every viewport between 861 and 900px.
+
+One asymmetry to keep: on phones the pin sits flush (`top: var(--header-h)`) and
+gets its gap from `padding-top`, because content scrolls directly underneath it
+and an open gap let a sliver of that content show through between the header and
+the pin. On desktop the pin is a grid column with nothing behind it, so the gap
+is a plain offset.
+
+Note that a sticky element passing behind the header as it *releases* is normal —
+that is how sticky works when its container ends. Only the resting offset matters.
+
 ## Responsive layout
 
 Verified with zero horizontal overflow across 11 pages x 9 viewport widths

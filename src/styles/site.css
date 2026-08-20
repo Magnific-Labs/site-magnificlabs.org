@@ -1,4 +1,9 @@
-html{scroll-behavior:smooth;scroll-padding-top:96px}
+/* Sticky geometry, in one place. Every pinned element offsets from these, so
+   changing the header height cannot silently leave something tucked behind it.
+   --sticky-gap is the breathing room between the header and whatever pins. */
+:root{--header-h:92px;--sticky-gap:28px}
+@media(max-width:860px){:root{--header-h:76px;--sticky-gap:16px}}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + var(--sticky-gap))}
 /* Lenis animates scrolling itself; leaving native smooth behaviour on makes the
    two fight over anchor jumps. `.lenis` is the persistent class — `.lenis-smooth`
    is only present mid-scroll — so this applies exactly while Lenis is running,
@@ -17,7 +22,7 @@ ul{margin:0}
 
 /* header + bookmark */
 .hdr{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper-50) 88%,transparent);backdrop-filter:blur(10px)}
-.hdr-in{display:flex;align-items:center;gap:24px;min-height:92px;padding-left:176px;position:relative}
+.hdr-in{display:flex;align-items:center;gap:24px;min-height:var(--header-h);padding-left:176px;position:relative}
 .bookmark{position:absolute;left:36px;top:0;display:grid;place-items:start center;min-height:0;transition:opacity var(--duration-base) var(--ease-standard)}
 .bookmark:hover{opacity:.78}
 .bookmark img{width:130px;height:130px;object-fit:contain;margin-top:-6px}
@@ -36,7 +41,7 @@ ul{margin:0}
   /* A narrower gutter for the header only, so the mark and wordmark sit closer
      to the edge than the body text does. */
   .hdr .wrap{width:min(1240px,100% - 24px)}
-  .hdr-in{padding-left:78px;min-height:76px}
+  .hdr-in{padding-left:78px}
   .bookmark{left:2px}
   .bookmark img{width:72px;height:72px}
   /* Without the script the links stay inline and wrap rather than overflow. */
@@ -80,9 +85,9 @@ ul{margin:0}
 .cta.ghost:hover{background:var(--brand-200);color:var(--brand-900)}
 
 /* pinned sections */
-.pin{position:sticky;top:112px;align-self:start}
+.pin{position:sticky;top:calc(var(--header-h) + var(--sticky-gap));align-self:start}
 .stack{display:flex;flex-direction:column;gap:clamp(16px,2vw,28px)}
-.stack .card{position:sticky;top:calc(120px + var(--i)*18px);border-radius:var(--radius-xl);padding:clamp(28px,3vw,52px);box-shadow:var(--shadow-sm)}
+.stack .card{position:sticky;top:calc(var(--header-h) + var(--sticky-gap) + var(--i)*18px);border-radius:var(--radius-xl);padding:clamp(28px,3vw,52px);box-shadow:var(--shadow-sm)}
 .split{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:clamp(32px,5vw,88px)}
 /* minmax(0,1fr), not 1fr: a bare 1fr is minmax(auto,1fr), so a wide child such as
    a code block sets the track's minimum and pushes the page sideways. */
@@ -95,12 +100,16 @@ ul{margin:0}
   .split>*+*{margin-top:28px}
   /* Opaque, with a hairline and a soft edge: content scrolls underneath, so the
      pinned block has to read as a layer rather than as overlapping text. */
-  .pin{position:sticky;top:76px;z-index:5;background:var(--paper-50);
+  /* The gap is padding here, not a top offset: on phones content scrolls
+     directly under this block, and an open gap let a sliver of it show through
+     between the header and the pin. Sitting flush with padding puts the same
+     breathing room above the text while the background covers the seam. */
+  .pin{top:var(--header-h);padding-top:var(--sticky-gap);z-index:5;background:var(--paper-50);
        padding-bottom:16px;border-bottom:1px solid var(--surface-border);
        box-shadow:0 14px 16px -14px rgb(36 29 26 / .16)}
   /* The stacked cards work either way: .stack is a flex column, so it stays a
      tall containing block. Only the offset needs to clear the shorter header. */
-  .stack .card{top:calc(84px + var(--i)*14px)}
+  .stack .card{top:calc(var(--header-h) + var(--sticky-gap) + var(--i)*14px)}
 }
 
 /* reveal */
