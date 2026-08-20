@@ -96,14 +96,88 @@
     }
   }
 
+  /* -- navigation drawer -------------------------------------------------- */
+
+  /**
+   * Opens the header links as a drawer on phones.
+   *
+   * The drawer is a native <dialog> opened with showModal(), which brings focus
+   * trapping, Escape-to-close and inerting the rest of the page for free. This
+   * function only has to wire the open/close triggers and keep aria-expanded
+   * and the scroll lock in step.
+   *
+   * The `js-nav` class on <html> is what hides the inline links, so with this
+   * script absent they stay visible rather than becoming unreachable.
+   *
+   * Returns a teardown for the window listener: hx-boost replaces the body on
+   * every navigation, and without removing it they would accumulate.
+   */
+  function initNav() {
+    var toggle = document.getElementById('navtoggle')
+    var drawer = document.getElementById('site-menu')
+    if (!toggle || !drawer) return null
+
+    root.classList.add('js-nav')
+    toggle.hidden = false
+
+    // <html> survives a boosted swap, so a drawer left open during navigation
+    // would otherwise strand the scroll lock.
+    root.classList.remove('nav-open')
+
+    function open() {
+      if (drawer.open || typeof drawer.showModal !== 'function') return
+      drawer.showModal()
+      // Without this, showModal() focuses the close button and paints a focus
+      // ring for people who opened the drawer by tapping it.
+      var panel = drawer.querySelector('.drawer-in')
+      if (panel) panel.focus()
+      toggle.setAttribute('aria-expanded', 'true')
+      root.classList.add('nav-open')
+    }
+
+    function close() {
+      if (drawer.open) drawer.close()
+    }
+
+    toggle.addEventListener('click', open)
+
+    // Fires for Escape and for close() alike, so all paths land here.
+    drawer.addEventListener('close', function () {
+      toggle.setAttribute('aria-expanded', 'false')
+      root.classList.remove('nav-open')
+    })
+
+    drawer.addEventListener('click', function (event) {
+      // A click landing on the dialog itself is the scrim; the panel is a child.
+      if (event.target === drawer) return close()
+      if (event.target.closest('[data-drawer-close]')) return close()
+      // Let boosted navigation take over, but do not leave the drawer behind.
+      if (event.target.closest('a')) close()
+    })
+
+    // Resizing up to desktop reveals the inline links again; a drawer still
+    // sitting open over them would be stranded.
+    function onResize() {
+      if (drawer.open && window.innerWidth > 860) close()
+    }
+    window.addEventListener('resize', onResize)
+
+    return function teardown() {
+      window.removeEventListener('resize', onResize)
+    }
+  }
+
   /* -- wiring -------------------------------------------------------------- */
 
   var teardownToc = null
+  var teardownNav = null
 
   function init() {
     if (teardownToc) teardownToc()
+    if (teardownNav) teardownNav()
     initReveal()
     teardownToc = initToc()
+    teardownNav = initNav()
   }
 
   if (document.readyState === 'loading') {

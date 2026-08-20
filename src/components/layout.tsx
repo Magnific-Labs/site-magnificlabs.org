@@ -21,13 +21,65 @@ function SiteHeader({ active }: { active?: string }): JSX.Element {
           <img src="/assets/logo-mark-alpha.png" alt="" width="130" height="130" />
         </Link>
         <Wordmark />
-        <nav class="nav" aria-label="Main">
+        <nav class="nav" id="site-nav" aria-label="Main">
           {nav.map((item) => (
             <Link href={item.href} aria-current={item.label === active ? 'page' : undefined}>
               {Html.escapeHtml(item.label)}
             </Link>
           ))}
         </nav>
+        {/* Revealed by the client script, which then hides the inline links and
+            opens the drawer below. Without JavaScript this button stays hidden
+            and the links above remain ordinary inline links. */}
+        <button
+          type="button"
+          class="navtoggle"
+          id="navtoggle"
+          aria-controls="site-menu"
+          aria-expanded="false"
+          aria-label="Menu"
+          hidden
+        >
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+            <path
+              d="M3 6h16M3 11h16M3 16h16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+
+        {/* A native <dialog> so focus trapping, Escape, and inerting the page
+            behind come from the platform rather than hand-written JS. */}
+        <dialog class="drawer" id="site-menu" aria-label="Menu">
+          {/* Focus target: showModal() would otherwise focus the close button and
+              show a 3px focus ring to mouse and touch users. */}
+          <div class="drawer-in" tabindex="-1">
+            <div class="drawer-head">
+              <Wordmark />
+              <button type="button" class="drawer-close" data-drawer-close aria-label="Close menu">
+                <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+                  <path
+                    d="M5.5 5.5l11 11M16.5 5.5l-11 11"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="drawer-links">
+              {nav.map((item) => (
+                <Link href={item.href} aria-current={item.label === active ? 'page' : undefined}>
+                  {Html.escapeHtml(item.label)}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </dialog>
       </div>
     </header>
   )

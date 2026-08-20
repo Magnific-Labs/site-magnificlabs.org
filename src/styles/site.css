@@ -22,13 +22,36 @@ ul{margin:0}
 .nav a{font-family:var(--font-display);font-weight:600;font-size:16px;padding:0 16px;height:44px;display:inline-flex;align-items:center;border-radius:var(--radius-pill);color:var(--ink-700);transition:background var(--duration-fast) var(--ease-standard),color var(--duration-fast)}
 .nav a:hover{background:var(--brand-50);color:var(--brand-700)}
 .nav a[aria-current]{background:var(--brand-100);color:var(--brand-700)}
-.navtoggle{display:none}
-@media(max-width:860px){.hdr-in{padding-left:104px;min-height:76px}.bookmark{left:20px}.bookmark img{width:74px;height:74px}.nav{gap:0}.nav a{padding:0 10px;font-size:15px}}
-/* Below this the wordmark, the logo and four nav links cannot share a row.
-   The logo mark carries the brand, so the repeated text is what gives way. */
-@media(max-width:560px){.mark{display:none}}
-@media(max-width:520px){.nav a{padding:0 8px;font-size:14px}}
-@media(max-width:400px){.hdr-in{padding-left:74px;gap:6px}.bookmark{left:16px}.bookmark img{width:54px;height:54px}.nav a{padding:0 6px;font-size:13px}}
+/* Menu button. Hidden until the script reveals it, and only laid out on
+   phone widths — see the collapsed-nav block below. */
+.navtoggle{display:none;margin-left:auto;width:44px;height:44px;align-items:center;justify-content:center;border:none;background:transparent;border-radius:var(--radius-pill);color:var(--ink-700);cursor:pointer;transition:background var(--duration-fast) var(--ease-standard),color var(--duration-fast)}
+.navtoggle:hover{background:var(--brand-50);color:var(--brand-700)}
+.navtoggle[aria-expanded=true]{background:var(--brand-100);color:var(--brand-700)}
+@media(max-width:860px){
+  /* A narrower gutter for the header only, so the mark and wordmark sit closer
+     to the edge than the body text does. */
+  .hdr .wrap{width:min(1240px,100% - 24px)}
+  .hdr-in{padding-left:78px;min-height:76px}
+  .bookmark{left:2px}
+  .bookmark img{width:72px;height:72px}
+  /* Without the script the links stay inline and wrap rather than overflow. */
+  .nav{gap:0;flex-wrap:wrap;justify-content:flex-end}
+  .nav a{padding:0 10px;font-size:15px}
+
+  /* With the script: the inline links give way to one button and the drawer. */
+  .js-nav .nav{display:none}
+  .js-nav .navtoggle{display:inline-flex}
+}
+/* Only the no-script fallback still needs to shed the wordmark and tighten the
+   links; with the popover the header is just logo + wordmark + one button. */
+@media(max-width:560px){html:not(.js-nav) .mark{display:none}}
+@media(max-width:520px){html:not(.js-nav) .nav a{padding:0 8px;font-size:14px}}
+@media(max-width:400px){
+  .hdr-in{padding-left:68px;gap:8px}
+  .bookmark{left:0}
+  .bookmark img{width:64px;height:64px}
+  html:not(.js-nav) .nav a{padding:0 6px;font-size:13px}
+}
 
 /* type */
 .h-xl{font-size:clamp(38px,5.6vw,72px);font-weight:800;line-height:1.03;letter-spacing:-0.03em}
@@ -58,7 +81,16 @@ ul{margin:0}
 .split{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:clamp(32px,5vw,88px)}
 /* minmax(0,1fr), not 1fr: a bare 1fr is minmax(auto,1fr), so a wide child such as
    a code block sets the track's minimum and pushes the page sideways. */
-@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr);gap:28px}.split>*{min-width:0}.pin{position:static}.stack .card{position:static}}
+@media(max-width:900px){
+  .split{grid-template-columns:minmax(0,1fr);gap:28px}
+  .split>*{min-width:0}
+  /* One column means .pin gets its own grid row, and a sticky box cannot travel
+     outside its own row — so there is nothing here for it to stick within. */
+  .pin{position:static}
+  /* The stacked cards do still work: .stack is a flex column, so it stays a
+     tall containing block. Only the offset needs to clear the shorter header. */
+  .stack .card{top:calc(84px + var(--i)*14px)}
+}
 
 /* reveal */
 .reveal{transition:opacity 500ms var(--ease-out),transform 500ms var(--ease-out)}

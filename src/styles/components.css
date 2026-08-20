@@ -141,3 +141,106 @@
   text-underline-offset: 3px;
 }
 .consent-reopen:hover { color: var(--paper-0) }
+
+/* Mobile navigation drawer.
+   A native <dialog>, so the platform supplies focus trapping, Escape, and
+   inerting the page behind it. Slides in from the right over a dimmed scrim.
+
+   `transform` is a third animated property, beyond the studio's stated budget
+   of opacity and background colour — but it is compositor-only, so it costs no
+   layout or paint, and a drawer that does not move is not a drawer. Duration
+   stays inside the 280ms ceiling, and the slide is dropped entirely under
+   prefers-reduced-motion. */
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(64vw, 300px);
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: var(--paper-0);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink-700);
+  opacity: 0;
+  transform: translateX(100%);
+  transition:
+    transform 220ms var(--ease-out),
+    opacity 220ms var(--ease-out),
+    overlay 220ms allow-discrete,
+    display 220ms allow-discrete;
+}
+.drawer[open] { opacity: 1; transform: translateX(0) }
+
+/* The entry animation needs a start state for the frame the dialog appears. */
+@starting-style {
+  .drawer[open] { opacity: 0; transform: translateX(100%) }
+}
+
+.drawer::backdrop {
+  background: color-mix(in srgb, var(--ink-900) 52%, transparent);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition:
+    opacity 220ms var(--ease-out),
+    overlay 220ms allow-discrete,
+    display 220ms allow-discrete;
+}
+.drawer[open]::backdrop { opacity: 1 }
+@starting-style {
+  .drawer[open]::backdrop { opacity: 0 }
+}
+
+.drawer-in { display: flex; flex-direction: column; height: 100%; padding: 16px }
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-left: 8px;
+}
+.drawer-close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast);
+}
+.drawer-close:hover { background: var(--brand-50); color: var(--brand-700) }
+
+.drawer-links { display: flex; flex-direction: column; gap: 2px; margin-top: 12px }
+.drawer-links a {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink-700);
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast);
+}
+.drawer-links a:hover { background: var(--brand-50); color: var(--brand-700) }
+.drawer-links a[aria-current] { background: var(--brand-100); color: var(--brand-700) }
+
+/* Hold the page still while the drawer is open. */
+.nav-open, .nav-open body { overflow: hidden }
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer, .drawer[open] { transform: none }
+  .drawer, .drawer::backdrop { transition-duration: 1ms }
+  @starting-style {
+    .drawer[open] { transform: none }
+  }
+}
