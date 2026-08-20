@@ -211,3 +211,29 @@ npm run deploy
 Prerenders and deploys to the `site-magnificlabs-org` Firebase project. Old
 `.html` URLs from the previous version 301-redirect to their new paths, which
 `firebase.json` handles.
+
+### Domains — config that is not in this repo
+
+`magnificlabs.org` serves the site; `www.magnificlabs.org` 301-redirects to it,
+path preserved. That redirect is **not** in `firebase.json` — Hosting's
+`redirects` match on path, not host — it is a field on the custom domain itself,
+so it lives in the Firebase project rather than in git:
+
+```sh
+# read
+curl -H "Authorization: Bearer $(gcloud auth print-access-token)"      -H "x-goog-user-project: site-magnificlabs-org"   "https://firebasehosting.googleapis.com/v1beta1/projects/site-magnificlabs-org/sites/site-magnificlabs-org/customDomains"
+
+# set (or "" to undo)
+curl -X PATCH -H "Authorization: Bearer $(gcloud auth print-access-token)"      -H "x-goog-user-project: site-magnificlabs-org" -H "Content-Type: application/json"      -d '{"redirectTarget":"magnificlabs.org"}'   ".../customDomains/www.magnificlabs.org?updateMask=redirectTarget"
+```
+
+DNS is Cloudflare, **DNS-only** — leave the proxy off, it can break Firebase's
+certificate renewal. Apex A record points at `199.36.158.100`; `www` is a CNAME
+to the `.web.app` host.
+
+Note that Reliance Jio intercepts `magnificlabs.org` in India, so a local
+`curl` failing is not evidence about the site. Check from outside instead:
+
+```sh
+curl "https://api.hackertarget.com/httpheaders/?q=https://magnificlabs.org"
+```
