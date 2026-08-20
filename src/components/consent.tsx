@@ -16,10 +16,9 @@ export function ConsentBanner(): JSX.Element {
     <section id="consent" class="consent" hidden aria-label="Analytics consent">
       <div class="wrap consent-in">
         <p class="small consent-text">
-          We'd like to count page views — which pages, how many, nothing that identifies you. That takes one cookie.
-          Decline and nothing is stored.{' '}
+          We use cookies for analytics, to understand how this site is used. Nothing we collect identifies you.{' '}
           <Link class="linked" href="/privacy/">
-            What we collect
+            Privacy policy
           </Link>
           .
         </p>
