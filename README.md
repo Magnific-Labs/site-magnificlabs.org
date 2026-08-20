@@ -183,10 +183,21 @@ it wrong silently breaks the document outline for screen readers:
 Verified with zero horizontal overflow across 11 pages x 9 viewport widths
 (320-1280px). Two traps worth knowing about, both fixed here:
 
-- The single-column `.split` uses `minmax(0,1fr)`. A bare `1fr` means
-  `minmax(auto,1fr)`, so a wide child — a code block in a post — sets the
-  track's minimum and pushes the whole page sideways. This cost 291px of
-  overflow on article pages.
+- Below 900px `.split` becomes `display: block`, not a one-column grid. In a
+  grid each child gets its own row, and a sticky box cannot travel outside its
+  row — so `.pin` had nothing to stick within. As blocks they share `.split` as
+  a tall containing block and `.pin` sticks properly. The grid `gap` is replaced
+  by `.split>*+*{margin-top}`.
+- A stuck `.pin` **must** stay opaque with its hairline. Content scrolls
+  underneath it, so a transparent background renders as overlapping text.
+- Measured cost of pinning on a 390x780 phone: 29% of the viewport on the home
+  page, 25% on an article's table of contents, 45% on About, whose facts list is
+  the tallest block. If that ever feels too heavy, `position: static` on `.pin`
+  in that media query reverts it.
+- When `.split` was a one-column grid it used `minmax(0,1fr)`, because a bare
+  `1fr` means `minmax(auto,1fr)` and a wide child — a code block in a post — set
+  the track's minimum and pushed the page sideways by 291px. `display: block`
+  avoids the problem differently; keep `min-width:0` on the children.
 - Below 560px the wordmark is hidden. The logo, the wordmark and four nav links
   cannot share one row on a phone; the logo mark carries the brand, so the
   repeated text is what gives way.

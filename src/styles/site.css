@@ -87,12 +87,18 @@ ul{margin:0}
 /* minmax(0,1fr), not 1fr: a bare 1fr is minmax(auto,1fr), so a wide child such as
    a code block sets the track's minimum and pushes the page sideways. */
 @media(max-width:900px){
-  .split{grid-template-columns:minmax(0,1fr);gap:28px}
+  /* Block, not a one-column grid: in a grid each child gets its own row, and a
+     sticky box cannot travel outside its row. As blocks they share .split as a
+     tall containing block, so .pin can actually stick. */
+  .split{display:block}
   .split>*{min-width:0}
-  /* One column means .pin gets its own grid row, and a sticky box cannot travel
-     outside its own row — so there is nothing here for it to stick within. */
-  .pin{position:static}
-  /* The stacked cards do still work: .stack is a flex column, so it stays a
+  .split>*+*{margin-top:28px}
+  /* Opaque, with a hairline and a soft edge: content scrolls underneath, so the
+     pinned block has to read as a layer rather than as overlapping text. */
+  .pin{position:sticky;top:76px;z-index:5;background:var(--paper-50);
+       padding-bottom:16px;border-bottom:1px solid var(--surface-border);
+       box-shadow:0 14px 16px -14px rgb(36 29 26 / .16)}
+  /* The stacked cards work either way: .stack is a flex column, so it stays a
      tall containing block. Only the offset needs to clear the shorter header. */
   .stack .card{top:calc(84px + var(--i)*14px)}
 }
