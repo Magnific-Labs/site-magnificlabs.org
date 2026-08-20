@@ -87,10 +87,6 @@ export function BlogPage({ posts, activeTag }: BlogPageProps): JSX.Element {
         <div id="blog-filter">
           <BlogFilter posts={posts} activeTag={activeTag} />
         </div>
-        <p class="small" style={{ marginTop: '32px' }}>
-          Posts are written in Markdown and live in <code>src/content/posts/</code> — add a file with frontmatter and it
-          appears here.
-        </p>
       </section>
     </Document>
   )

@@ -6,11 +6,11 @@ This policy covers magnificlabs.org. Our products are deep in development; when 
 
 Nothing that identifies you by name, and the site has no login and no accounts. We do not run advertising pixels and we do not sell or share anything with advertisers.
 
-We would like to measure how the site is used, with Google Analytics — but only if you say yes. On your first visit you will see a notice at the bottom of the page with an Accept and a Decline button. Until you choose Accept, no analytics script is loaded, no request is made to Google, and no cookie is set.
+We would like to know how the site is used, and we use Google Analytics for that — but only if you say yes. On your first visit you will see a notice at the bottom of the page with an Accept and a Decline button. Until you choose Accept, no analytics script is loaded, no request is made to Google, and no cookie is set.
 
 If you accept, Google Analytics records which pages you visit, when, roughly where you are in the world, and what kind of browser and device you used. It stores a random identifier in a cookie in your browser — `_ga` and one beginning `_ga_` — so that repeat visits within a session are counted as one person rather than several. That identifier is not tied to your name or your email, and we never try to connect it to one. Loading the script also tells Google's servers your IP address. Google processes this as our provider and reports back to us in aggregate.
 
-If you decline, we remember only that you declined, stored in your own browser rather than in a cookie sent to us.
+If you decline, the only thing we keep is that choice, and it stays in your own browser.
 
 You can change your mind at any time. "Analytics settings" at the foot of every page brings the notice back. If your browser sends a Global Privacy Control or Do Not Track signal we treat that as a decline and never ask.
 
