@@ -96,6 +96,38 @@
     }
   }
 
+  /* -- smooth scrolling ---------------------------------------------------- */
+
+  var lenis = null
+
+  /**
+   * Eases wheel and trackpad scrolling.
+   *
+   * Lenis drives the real scroll position rather than transforming a wrapper,
+   * which is why `position: sticky`, IntersectionObserver and find-in-page all
+   * keep working. Touch is deliberately left native: smoothing it fights the
+   * platform's own momentum and feels worse than doing nothing.
+   *
+   * One instance for the life of the document — window survives htmx swaps.
+   */
+  function initSmoothScroll() {
+    if (lenis || typeof window.Lenis !== 'function') return
+    // Someone asking for less motion is asking for this, first of all.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    lenis = new window.Lenis({
+      // 0.6s, not the 1.2s default: enough to feel eased, short enough that the
+      // page still stops when you do.
+      duration: 0.6,
+      smoothWheel: true,
+      syncTouch: false,
+      autoRaf: true,
+      // Let Lenis own in-page anchors. It honours the CSS scroll-padding-top,
+      // so headings already land clear of the sticky header without an offset.
+      anchors: true,
+    })
+  }
+
   /* -- navigation drawer -------------------------------------------------- */
 
   /**
@@ -133,6 +165,8 @@
       if (panel) panel.focus()
       toggle.setAttribute('aria-expanded', 'true')
       root.classList.add('nav-open')
+      // The CSS lock alone will not stop Lenis, which drives scroll itself.
+      if (lenis) lenis.stop()
     }
 
     function close() {
@@ -145,6 +179,7 @@
     drawer.addEventListener('close', function () {
       toggle.setAttribute('aria-expanded', 'false')
       root.classList.remove('nav-open')
+      if (lenis) lenis.start()
     })
 
     drawer.addEventListener('click', function (event) {
@@ -175,9 +210,17 @@
   function init() {
     if (teardownToc) teardownToc()
     if (teardownNav) teardownNav()
+    initSmoothScroll()
     initReveal()
     teardownToc = initToc()
     teardownNav = initNav()
+
+    // A boosted navigation swaps the body for content of a different height,
+    // and restarts scrolling that the drawer may have stopped.
+    if (lenis) {
+      lenis.start()
+      lenis.resize()
+    }
   }
 
   if (document.readyState === 'loading') {

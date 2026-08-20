@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { designSystemDir, STYLES_DIR } from './paths.js'
+
+const require = createRequire(import.meta.url)
 
 /** Design-system token files, in cascade order. */
 const DS_TOKENS = ['colors.css', 'typography.css', 'spacing.css', 'base.css'] as const
@@ -27,15 +30,24 @@ export interface StyleBundle {
 export async function bundleStyles(): Promise<StyleBundle> {
   const ds = designSystemDir()
 
+  // Lenis ships structural CSS its scroll hijacking depends on.
+  const vendor = await readFile(require.resolve('lenis/dist/lenis.css'), 'utf8')
+
   const parts = await Promise.all([
     ...DS_TOKENS.map((f) => readFile(join(ds, 'tokens', f), 'utf8')),
+    Promise.resolve(vendor),
     ...SITE_LAYERS.map((f) => readFile(join(STYLES_DIR, f), 'utf8')),
   ])
 
   let fontHref: string | undefined
   const css = parts
     .map((part, i) => {
-      const source = i < DS_TOKENS.length ? `_ds/tokens/${DS_TOKENS[i]}` : SITE_LAYERS[i - DS_TOKENS.length]
+      const source =
+        i < DS_TOKENS.length
+          ? `_ds/tokens/${DS_TOKENS[i]}`
+          : i === DS_TOKENS.length
+            ? 'vendor/lenis.css'
+            : SITE_LAYERS[i - DS_TOKENS.length - 1]
       const stripped = part.replace(FONT_IMPORT, (_full, _q, url: string) => {
         fontHref ??= url
         return ''

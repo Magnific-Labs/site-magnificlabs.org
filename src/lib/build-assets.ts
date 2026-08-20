@@ -32,13 +32,15 @@ export async function writeAssets(outDir: string): Promise<Assets> {
   const script = await readFile(join(SRC_DIR, 'scripts', 'site.js'))
   const analytics = await readFile(join(SRC_DIR, 'scripts', 'analytics.js'))
   const htmx = await readFile(require.resolve('htmx.org/dist/htmx.min.js'))
+  const lenis = await readFile(require.resolve('lenis/dist/lenis.min.js'))
 
-  const [cssHref, jsHref, htmxHref, analyticsHref] = await Promise.all([
+  const [cssHref, jsHref, htmxHref, lenisHref, analyticsHref] = await Promise.all([
     emit(outDir, 'styles/site.[hash].css', css),
     emit(outDir, 'scripts/site.[hash].js', script),
     emit(outDir, 'vendor/htmx.[hash].js', htmx),
+    emit(outDir, 'vendor/lenis.[hash].js', lenis),
     emit(outDir, 'scripts/analytics.[hash].js', analytics),
   ])
 
-  return { cssHref, jsHref, htmxHref, analyticsHref, fontHref }
+  return { cssHref, jsHref, htmxHref, lenisHref, analyticsHref, fontHref }
 }

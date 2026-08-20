@@ -53,7 +53,7 @@ function SiteHeader({ active }: { active?: string }): JSX.Element {
 
         {/* A native <dialog> so focus trapping, Escape, and inerting the page
             behind come from the platform rather than hand-written JS. */}
-        <dialog class="drawer" id="site-menu" aria-label="Menu">
+        <dialog class="drawer" id="site-menu" aria-label="Menu" data-lenis-prevent>
           {/* Focus target: showModal() would otherwise focus the close button and
               show a 3px focus ring to mouse and touch users. */}
           <div class="drawer-in" tabindex="-1">
@@ -134,7 +134,7 @@ export interface DocumentProps {
 
 /** The complete HTML document. Every page renders through this. */
 export function Document({ title, description, active, path, children }: DocumentProps): JSX.Element {
-  const { cssHref, jsHref, htmxHref, analyticsHref, fontHref } = getAssets()
+  const { cssHref, jsHref, htmxHref, lenisHref, analyticsHref, fontHref } = getAssets()
   const canonical = new URL(path, site.url).href
 
   return (
@@ -165,6 +165,7 @@ export function Document({ title, description, active, path, children }: Documen
           <meta name="twitter:card" content="summary" />
 
           <script src={htmxHref} defer />
+          <script src={lenisHref} defer />
           <script src={jsHref} defer />
           <script src={analyticsHref} data-ga-id={MEASUREMENT_ID} defer />
         </head>

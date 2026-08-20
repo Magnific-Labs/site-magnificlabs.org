@@ -9,6 +9,7 @@ export interface Assets {
   readonly cssHref: string
   readonly jsHref: string
   readonly htmxHref: string
+  readonly lenisHref: string
   readonly analyticsHref: string
   /** Google Fonts stylesheet hoisted out of the design-system CSS. */
   readonly fontHref: string | undefined

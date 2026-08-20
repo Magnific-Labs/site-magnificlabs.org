@@ -11,6 +11,7 @@ We give ourselves a fixed amount of movement to spend, the same way you would bu
 - 180ms for state changes you asked for.
 - 280ms as the absolute ceiling, used rarely.
 - Two properties: opacity and background colour.
+- One exception, described below: scrolling.
 
 ## Why so tight
 
@@ -20,7 +21,7 @@ There is also a plainer reason. Animation is the part of an interface most likel
 
 ## What we don't do
 
-No bounce, no spring, no scale-on-press, no page transitions that choreograph one screen out and the next one in. Hover states shift the background one step; press states shift it one step further. That is the whole vocabulary.
+No bounce, no spring, no scale-on-press, no page transitions that choreograph one screen out and the next one in. Hover states shift the background one step; press states shift it one step further. That is very nearly the whole vocabulary.
 
 ```css
 .button {
@@ -30,6 +31,14 @@ No bounce, no spring, no scale-on-press, no page transitions that choreograph on
   :root { --duration-base: 0ms }
 }
 ```
+
+## Scrolling, which breaks the rule
+
+This website eases its own scrolling, and 280ms does not cover it. That is a deliberate exception and worth stating plainly rather than quietly.
+
+Two things make it defensible. It is motion you are driving — the page follows your hand rather than deciding to move on its own, which is the distinction the budget is really about. And it is off entirely when your system asks for less motion, along with everything else here, so the people most affected by it never meet it. On touch it is off regardless: a phone's own momentum is better than anything we would put on top of it.
+
+We would not do this in a work tool. A marketing site you read once is not a console you live in for eight hours, which is the same reasoning as below.
 
 ## The exception
 

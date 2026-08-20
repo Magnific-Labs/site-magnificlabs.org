@@ -29,7 +29,8 @@ src/
   lib/            Config, markdown, content loading, asset pipeline.
   styles/         site.css and the ported design-system component CSS.
   scripts/
-    site.js       Progressive enhancement (reveal-on-scroll, table of contents).
+    site.js       Progressive enhancement: smooth scroll, reveal, table of
+                  contents, mobile drawer.
     analytics.js  Consent gate, and GA4 once consent is given.
   routes.ts       Every published URL, in one list.
   server.ts       Dev server.
@@ -121,6 +122,34 @@ one of which imports Google Fonts — three round trips before a glyph loads.
 `lib/styles.ts` flattens all of it into one stylesheet and lifts the font URL
 into `<head>`. CSS, JS and htmx are content-hashed, which is what makes the
 `immutable` cache headers in `firebase.json` safe.
+
+## Smooth scrolling
+
+Wheel and trackpad scrolling is eased with [Lenis](https://lenis.dev) at 0.6s,
+not its 1.2s default. Lenis drives the real scroll position rather than
+transforming a wrapper, which is why `position: sticky`, IntersectionObserver
+and find-in-page all keep working — do not swap it for a transform-based
+library.
+
+Four things it is wired to, each of which breaks if removed:
+
+- **`prefers-reduced-motion` skips initialisation entirely.** The library still
+  loads, but nothing hijacks scroll.
+- **Touch is left native** (`syncTouch: false`). A phone's own momentum beats
+  anything layered on top.
+- **The drawer calls `lenis.stop()`.** The CSS `overflow: hidden` lock alone
+  does not stop Lenis, which drives scroll itself.
+- **`lenis.resize()` after a boosted swap**, since the new body has a different
+  height.
+
+`html.lenis` — the persistent class, not `.lenis-smooth`, which is only present
+mid-scroll — turns off native `scroll-behavior: smooth` so the two do not fight
+over anchor jumps. Lenis honours `scroll-padding-top`, so anchors already land
+clear of the sticky header with no offset.
+
+This is a deliberate exception to the motion budget published in
+`content/posts/a-motion-budget.md`, and that post says so. If you change what
+scrolling does, change that post in the same commit.
 
 ## Responsive layout
 
