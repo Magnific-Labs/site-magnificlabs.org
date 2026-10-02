@@ -5,41 +5,36 @@ tag: "Design"
 tone: "lavender"
 summary: "Everything we ship moves for under 280ms, in two properties, and stops entirely when your system asks for less motion."
 ---
-We give ourselves a fixed amount of movement to spend, the same way you would budget bytes on a slow connection. Everything that moves in our software fits inside it:
+We give ourselves a fixed amount of movement to spend, the same way an engineering team budgets network bytes on high-latency connections. Everything that moves across our software fits strictly inside it:
 
-- 120ms for anything that responds to a press.
-- 180ms for state changes you asked for.
-- 280ms as the absolute ceiling, used rarely.
-- Two properties: opacity and background colour.
-- One exception, described below: scrolling.
+- **120ms** for micro-feedback that acknowledges a press or tap.
+- **180ms** for discrete UI state changes the user requested.
+- **280ms** as the hard ceiling for structural overlays and dialogs, used sparingly.
+- **Two animated properties:** opacity and GPU-accelerated transform.
+- **Instant static fallback** for users who specify `prefers-reduced-motion`.
 
-## Why so tight
+## Prioritizing end-user velocity over demo theatrics
 
-Motion is the easiest way to make a demo feel expensive and a daily tool feel slow. The first time a panel glides in, it is delightful. The four-hundredth time, it is a queue you are standing in.
+Motion is the easiest way to make a software demo look expensive and a daily production tool feel sluggish. The first time a panel sweeps across the screen, it feels sleek. The five-hundredth time you encounter it while trying to file an invoice or edit a document, it is a forced delay you are waiting on.
 
-There is also a plainer reason. Animation is the part of an interface most likely to make someone ill. Vestibular disorders are common, and large parallax or spring-based transitions are a known trigger. A small budget means that when we honour `prefers-reduced-motion`, almost nothing of the design is actually lost.
-
-## What we don't do
-
-No bounce, no spring, no scale-on-press, no page transitions that choreograph one screen out and the next one in. Hover states shift the background one step; press states shift it one step further. That is very nearly the whole vocabulary.
+Our priority is the person using the system day in and day out. Their attention and velocity matter more than our desire to show off choreography. When software responds under 120ms, it ceases to feel like software and starts feeling like an extension of thought.
 
 ```css
 .button {
-  transition: background var(--duration-base) var(--ease-standard);
+  transition: background var(--duration-base) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard);
 }
 @media (prefers-reduced-motion: reduce) {
-  :root { --duration-base: 0ms }
+  :root { --duration-base: 0ms; --duration-fast: 0ms; }
 }
 ```
 
-## Scrolling, which breaks the rule
+## Sensory respect and vestibular safety
 
-This website eases its own scrolling, and 280ms does not cover it. That is a deliberate exception, and we would rather say so than leave you to notice.
+There is a health imperative that many engineering teams overlook. Vestibular disorders affect millions of people. Large-scale parallax scrolling, spring-physics bouncing, and uninvited screen shifts are documented medical triggers for nausea and disorientation.
 
-Two things make it defensible. It is motion you are driving — the page follows your hand rather than deciding to move on its own, which is the distinction the budget is really about. And it is off entirely when your system asks for less motion, along with everything else here, so the people most affected by it never meet it. On touch it is off regardless: a phone's own momentum is better than anything we would put on top of it.
+A disciplined motion budget guarantees that animation remains informative, clarifying spatial context rather than creating cognitive static. And when an operating system requests reduced motion, our animations do not merely slow down — they disappear entirely.
 
-We would not do this in a work tool. A marketing site you read once is not a console you live in for eight hours — the same distinction the next section draws.
+## The durable boundary
 
-## The exception
-
-Work tools stay still — nothing moves unless you moved it. Games and consumer surfaces get to be alive: responsive, noisy, personality intact. Same budget per interaction, spent much more often. A tool you use for eight hours and a game you use for twenty minutes are not the same problem.
+Tools you live in for eight hours must remain steady, predictable, and calm. By enforcing strict motion boundaries, our applications respect your hardware's battery, protect your cognitive focus, and remain dependable across years of daily use.

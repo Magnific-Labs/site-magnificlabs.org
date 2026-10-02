@@ -5,7 +5,7 @@ export const site = {
   email: 'hello@magnificlabs.org',
   github: 'https://github.com/organizations/Magnific-Labs',
   url: 'https://magnificlabs.org',
-  blurb: 'A small studio building thoughtful, accessible software for work and play.',
+  blurb: 'Independent software studio engineering proprietary products and consulting on web, mobile, native, and cross-platform systems.',
 } as const
 
 export interface NavLink {

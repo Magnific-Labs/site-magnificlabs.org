@@ -13,19 +13,29 @@ interface Reason {
 }
 
 const REASONS: readonly Reason[] = [
-  { title: 'Say hello', accent: 'sage', blurb: 'Questions, feedback, or nothing in particular.', subject: 'Hello' },
-  { title: 'Early access', accent: 'sky', blurb: 'Ask to hear when the first thing ships.', subject: 'Early access' },
   {
-    title: 'Work with us',
-    accent: 'lavender',
-    blurb: 'Design, engineering, accessibility testing.',
-    subject: 'Working together',
+    title: 'Client engagements',
+    accent: 'sage',
+    blurb: 'Product engineering, systems architecture, and builds across web, mobile, and native platforms.',
+    subject: 'Client engagement inquiry',
   },
   {
-    title: 'Report a problem',
+    title: 'Product pipeline',
+    accent: 'sky',
+    blurb: 'Inquiries regarding our upcoming proprietary software and private previews.',
+    subject: 'Product pipeline inquiry',
+  },
+  {
+    title: 'Technical advisory',
+    accent: 'lavender',
+    blurb: 'Architecture reviews, accessibility evaluations, and technical leadership.',
+    subject: 'Advisory inquiry',
+  },
+  {
+    title: 'Say hello',
     accent: 'clay',
-    blurb: 'Something broken, unclear, or inaccessible.',
-    subject: 'Problem report',
+    blurb: 'Conversation, thoughts, open-source feedback, or shared interests.',
+    subject: 'Hello',
   },
 ]
 
@@ -33,14 +43,14 @@ export function ContactPage(): JSX.Element {
   return (
     <Document
       title="Contact — Magnific Labs"
-      description="Write to hello@magnificlabs.org — questions, early access, working together."
+      description="Contact Magnific Labs at hello@magnificlabs.org — client consulting, systems engineering, and product pipeline inquiries."
       active="Contact"
       path="/contact/"
     >
       <PageHead
         eyebrow="Contact"
-        title="One address, no forms."
-        lead="Everything — questions, early access, bug reports, working together — goes to the same inbox."
+        title="One address, direct conversation."
+        lead="Whether you are looking to consult on an upcoming build, inquire about our product pipeline, or explore collaboration — every message goes straight to our team."
       />
 
       <section class="wrap" style={{ paddingBottom: 'clamp(24px,3vw,40px)' }}>

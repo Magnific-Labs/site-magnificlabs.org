@@ -7,41 +7,47 @@ import { site, type Accent } from '../lib/site.js'
 const STORY: readonly (readonly [string, string])[] = [
   [
     'Why we exist',
-    'Bad software costs you more than time. A cluttered screen at the end of a long day, a form that loses your work, an app that pulls at your attention all evening — it wears you down in ways you stop noticing. We think the software you use daily should leave you better off than it found you. So we build tools that are clear, dependable and genuinely useful, for as many people as we can reach.',
+    'Bad software costs more than wasted time. A cluttered screen at the end of a long day, an interface that demands your attention with fake urgency, brittle infrastructure that breaks under load — it wears down users and engineering teams alike. We believe software should leave you better off than it found you: fast, quiet, accessible, and dependable over years of use.',
   ],
   [
-    "What we're making",
-    'A notes app, a task monster, the systems small businesses run on, and a few games. Different products, built to the same standard.',
+    'Two complementary practices',
+    'We divide our work between two disciplines: building our own proprietary software products, and partnering with companies to consult, architect, and engineer their critical systems. Our product engineering spans the full application lifecycle across modern web platforms, mobile (iOS and Android), platform-native desktop software (macOS, Windows, Linux), and unified cross-platform architectures. In our own pipeline, we build without external rush or compromise. For client partners, we bring senior engineering rigor, clean system architecture, and unhurried craft.',
+  ],
+  [
+    'What we reveal (and what we keep quiet)',
+    'We deliberately keep our in-house product pipeline quiet while development is underway. We do not publish speculative roadmaps or launch theatre. When a product is ready to be lived with, we introduce it here first. Until then, our attention stays on the architecture, the code, and the problem.',
   ],
 ]
 
 const FACTS: readonly (readonly [string, string])[] = [
   ['Founded', '2026'],
-  ['Team', 'Small on purpose'],
-  ['Built for', 'Desktop, mobile, web'],
-  ['Status', 'In development'],
+  ['Disciplines', 'Product engineering & consulting'],
+  ['Platforms', 'Web, Mobile, Desktop, Native'],
+  ['Environments', 'iOS, Android, macOS, Windows, Linux'],
+  ['In-house pipeline', 'Private development (stealth)'],
+  ['Client work', 'Select engagements'],
 ]
 
 const VALUES: readonly { title: string; accent: Accent; blurb: string }[] = [
   {
     title: 'Undistracting',
     accent: 'sage',
-    blurb: 'Nothing moves unless you moved it. No streaks to keep, no nudges, no red dots for things that can wait.',
+    blurb: 'Nothing moves unless you moved it. No streaks to keep, no manufactured urgency, no red badges for things that can wait.',
   },
   {
     title: 'Legible',
     accent: 'sky',
-    blurb: 'Text you can read without leaning in — comfortable sizes, generous spacing, lines that never run too long.',
+    blurb: 'Text you can read without leaning in — comfortable sizes, generous spacing, high contrast, and accessibility decided on day one.',
   },
   {
     title: 'Durable',
     accent: 'butter',
-    blurb: 'Your work stays yours. Open file formats, exports that actually work, and nothing held hostage to keep you subscribed.',
+    blurb: 'Architectures built to outlive trends. Resilient data models, open formats, low latency, and zero bloat.',
   },
   {
     title: 'Honest',
     accent: 'clay',
-    blurb: "Plain language, plain pricing, and no invented urgency. If something isn't ready, we'll say so.",
+    blurb: "Plain language, clear architecture, and no sales theatre. If something isn't ready or isn't a fit, we say so directly.",
   },
 ]
 
@@ -55,11 +61,11 @@ function Story(): JSX.Element {
         </p>
         <div class="col" style={{ gap: '2px', marginTop: '28px' }}>
           {FACTS.map(([key, value]) => (
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '24px', padding: '12px 0', maxWidth: '30ch' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '24px', padding: '12px 0', maxWidth: '30ch', borderBottom: '1px solid var(--paper-200)' }}>
               <span class="small" safe>
                 {key}
               </span>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: '700' }} safe>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: '700', color: 'var(--ink-900)' }} safe>
                 {value}
               </span>
             </div>
@@ -99,7 +105,7 @@ function Values(): JSX.Element {
         {VALUES.map((value) => (
           <div
             class="reveal"
-            style={`background:var(--${value.accent}-100);border-radius:var(--radius-lg);padding:clamp(22px,2.2vw,32px)`}
+            style={`background:var(--${value.accent}-100);border-radius:var(--radius-lg);padding:clamp(22px,2.2vw,32px);border:1px solid color-mix(in srgb, var(--${value.accent}-300) 40%, transparent)`}
           >
             <h3 class="h-md" style={`color:var(--${value.accent}-700)`} safe>
               {value.title}
@@ -124,22 +130,26 @@ function WorkWithUs(): JSX.Element {
           borderRadius: 'var(--radius-xl)',
           padding: 'clamp(28px,3.5vw,56px)',
           boxShadow: 'var(--shadow-sm)',
+          border: '1px solid var(--surface-border)',
         }}
       >
-        <h2 class="h-md">Work with us, or just say hello</h2>
+        <h2 class="h-md">Collaborating with the studio</h2>
         <p class="body" style={{ marginTop: '12px' }}>
-          Our open source projects are available on{' '}
-          <Link class="linked" href={site.github}>
-            GitHub
-          </Link>
-          , and we write about whatever we're thinking through on the{' '}
+          We take on a small number of client consulting and engineering projects each year. We also share technical essays on our{' '}
           <Link class="linked" href="/blog/">
             blog
           </Link>
-          . Got something you want built, or an idea worth collaborating on? Get in touch.
+          {' '}and open source tools on{' '}
+          <Link class="linked" href={site.github}>
+            GitHub
+          </Link>
+          . Have a project that demands senior engineering and thoughtful architecture? Let's talk.
         </p>
-        <div style={{ marginTop: '24px' }}>
-          <ButtonLink href={`mailto:${site.email}`}>{site.email}</ButtonLink>
+        <div style={{ marginTop: '24px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+          <ButtonLink href="/contact/">Start a conversation</ButtonLink>
+          <ButtonLink href={`mailto:${site.email}`} variant="ghost">
+            {site.email}
+          </ButtonLink>
         </div>
       </div>
     </section>
@@ -150,14 +160,14 @@ export function AboutPage(): JSX.Element {
   return (
     <Document
       title="About — Magnific Labs"
-      description="How Magnific Labs works: foundations first, accessibility built in, products shaped around their job."
+      description="About Magnific Labs: an independent software studio building proprietary products and consulting on critical client systems."
       active="About"
       path="/about/"
     >
       <PageHead
         eyebrow="About"
-        title="We build software worth keeping."
-        lead="Magnific Labs is a small independent studio making tools for the job at hand — and games for when it's done. Different products, the same craft in every one of them."
+        title="We build software worth living with."
+        lead="Magnific Labs is an independent software studio. We engineer proprietary products in our own pipeline and partner with companies to consult, architect, and build their most demanding software systems across web, mobile, and platform-native environments."
       />
       <Story />
       <Values />
